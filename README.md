@@ -8,6 +8,12 @@ It includes:
 
 - a figure contract and data/inference audit;
 - chart-selection guidance;
+- an evidence-based chart playbook with text budgets and optimized defaults for
+  categorical, distribution, trend, forest, scatter, composition, geographic,
+  paired, ranking, repeated-measures, event-study, heatmap, diagnostics, and
+  small-multiple figures;
+- a source list covering graphical perception, visual communication, scientific
+  figure design, estimation graphics, distributions, and scientific color maps;
 - a Matplotlib publication style and reusable figure helpers;
 - bundled IBM Plex Sans and IBM Plex Serif fonts under the SIL Open Font License;
 - refined Editorial, Ocean, Grayscale, and accessible Okabe-Ito categorical palettes;

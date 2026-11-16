@@ -2,6 +2,8 @@
 
 Choose a chart from the statistical task, not from decoration. State the comparison in one sentence before reviewing this table.
 
+After selecting a row, use the corresponding section in [chart-playbook.md](chart-playbook.md) for chart-specific defaults. The evidence behind those rules is summarized in [evidence.md](evidence.md).
+
 | Research task | Preferred starting point | Avoid or use cautiously |
 | --- | --- | --- |
 | Compare a few category values | Horizontal dot plot; bar chart when length is meaningful and zero is meaningful | 3D bars, exploded pies, decorative cylinders, truncated bar charts |

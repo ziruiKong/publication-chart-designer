@@ -37,7 +37,7 @@ For a detailed preflight review, read [references/figure-review.md](references/f
 
 ## 3. Choose the Visual Encoding
 
-Read [references/chart-selection.md](references/chart-selection.md) when choosing among chart types or when the requested chart could misrepresent the comparison.
+Read [references/chart-selection.md](references/chart-selection.md) when choosing among chart types or when the requested chart could misrepresent the comparison. After choosing a type, read the matching section of [references/chart-playbook.md](references/chart-playbook.md) for production defaults and text limits. Design claims in the playbook are grounded in [references/evidence.md](references/evidence.md).
 
 Prefer position and length over area, angle, or volume. Use a single shared axis when panels invite comparison. For bar and area charts, start at zero unless a zoom is essential and unmistakably signaled. Use log scales only when ratios are meaningful.
 
@@ -55,6 +55,8 @@ Apply a clarity budget before adding detail:
 - Use a forest or coefficient plot for many estimates that require precision comparisons. Use a clean bar chart or small multiples when a few means need to be understood quickly.
 - Keep the most important ordering visible at thumbnail size. If a reader must study labels to discover the main comparison, simplify before styling.
 - Apply at most two emphasis devices, such as color and direct labels. More emphasis everywhere removes hierarchy.
+
+Treat the figure and caption as one unit. Put sample size, exclusion rules, transformations, interval definitions, and model details in the caption unless the figure must stand alone. Keep titles, panel names, axes, and genuinely decoding annotations in the plot itself.
 
 ## 4. Build at Final Size
 
