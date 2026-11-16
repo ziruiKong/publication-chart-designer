@@ -35,9 +35,20 @@ def audit_pdf(path: Path) -> list[dict[str, str]]:
             for match in re.findall(rb"/BaseFont\s*/([^\s/<>\[\]()]+)", data)
         }
     )
+    media_box = re.search(
+        rb"/MediaBox\s*\[\s*([\d.\-]+)\s+([\d.\-]+)\s+([\d.\-]+)\s+([\d.\-]+)\s*\]",
+        data,
+    )
 
     results.append(_result("ok", f"PDF pages: {page_count}"))
     results.append(_result("ok", f"Font objects: {font_count}; embedded font streams: {embedded_count}"))
+    if media_box:
+        x0, y0, x1, y1 = (float(value) for value in media_box.groups())
+        width = abs(x1 - x0) / 72
+        height = abs(y1 - y0) / 72
+        results.append(_result("ok", f"First-page physical size: {width:.2f} x {height:.2f} in"))
+    else:
+        results.append(_result("warn", "No MediaBox found; physical page size could not be verified"))
     if base_fonts:
         results.append(_result("ok", "Fonts: " + ", ".join(base_fonts[:8])))
     if page_count != 1:
@@ -82,6 +93,10 @@ def audit_png(path: Path) -> list[dict[str, str]]:
         width, height = image.size
         dpi = image.info.get("dpi")
         results.append(_result("ok", f"PNG pixels: {width} x {height}; mode: {image.mode}"))
+        if image.mode in {"RGBA", "LA"}:
+            alpha = image.getchannel("A")
+            if alpha.getextrema()[0] < 255:
+                results.append(_result("warn", "PNG contains transparent pixels; verify transparency is intentional"))
 
         if dpi:
             dpi_x = round(float(dpi[0]), 1)

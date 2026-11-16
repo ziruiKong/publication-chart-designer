@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "palettes": {
+    "accessible": {
+      "label": "Accessible / Okabe-Ito",
+      "colors": [
+        "#0072B2",
+        "#D55E00",
+        "#009E73",
+        "#CC79A7",
+        "#E69F00",
+        "#56B4E9",
+        "#111111"
+      ]
+    },
+    "editorial": {
+      "label": "Editorial",
+      "colors": [
+        "#1F3A5F",
+        "#BC5B3F",
+        "#5F8878",
+        "#8F567E",
+        "#C39A4A",
+        "#465966"
+      ]
+    },
+    "ocean": {
+      "label": "Ocean",
+      "colors": [
+        "#173B4D",
+        "#2E6F7E",
+        "#6FA6B0",
+        "#A9C9C4",
+        "#D4B07B",
+        "#B5654F"
+      ]
+    },
+    "grayscale": {
+      "label": "Grayscale",
+      "colors": [
+        "#111111",
+        "#3C4650",
+        "#687782",
+        "#98A5AD",
+        "#CBD1D1"
+      ]
+    }
+  },
+  "colormaps": {
+    "sequential": {
+      "label": "Paper Blue",
+      "colors": [
+        "#F7F8F7",
+        "#DDE8E8",
+        "#AECFCF",
+        "#6FA9B1",
+        "#2E7586",
+        "#173B4D"
+      ]
+    },
+    "diverging": {
+      "label": "Sand & Teal",
+      "colors": [
+        "#A94F3A",
+        "#D99B7F",
+        "#F2EAE0",
+        "#B8D2CC",
+        "#36767B"
+      ]
+    }
+  }
+}

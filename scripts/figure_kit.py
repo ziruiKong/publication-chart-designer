@@ -1,17 +1,21 @@
-"""Reusable Matplotlib helpers for publication figures.
+"""Reusable Matplotlib helpers for polished publication figures.
 
-Copy this file and ``assets/publication.mplstyle`` into the analysis project.
-The helpers keep final physical dimensions, panel labels, reference lines, and
-exports consistent without hiding the actual plotting decisions.
+Copy this file and the ``assets`` directory into the analysis project. The
+helpers keep typography, color, physical dimensions, panel labels, reference
+lines, and exports consistent without hiding the actual plotting decisions.
 """
 
 from __future__ import annotations
 
+import json
+import warnings
 from pathlib import Path
 from typing import Iterable, Sequence
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib import font_manager
+from matplotlib.colors import LinearSegmentedColormap
 
 
 COLORS = {
@@ -39,23 +43,187 @@ FIGURE_WIDTHS = {
     "single": 3.4,
     "1.5": 4.8,
     "double": 7.0,
+    "nature-single": 3.50,
+    "nature-double": 7.20,
+    "science-single": 2.17,
+    "science-double": 4.72,
+    "science-triple": 7.20,
+    "ieee-single": 3.50,
+    "ieee-double": 7.16,
+    "plos-full": 7.50,
+    "apa-page": 6.50,
 }
 
+DEFAULT_PALETTE = "editorial"
+_PALETTE_CACHE: dict[Path, dict] = {}
+_ACTIVE_PALETTE_PATH: Path | None = None
 
-def use_publication_style(style_path: str | Path | None = None) -> None:
-    """Load the bundled style and the accessible default color cycle."""
 
+def _asset_dir() -> Path:
+    script_dir = Path(__file__).resolve().parent
+    candidates = (
+        script_dir / "assets",
+        script_dir.parent / "assets",
+        Path.cwd() / "assets",
+    )
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return script_dir.parent / "assets"
+
+
+def _palette_data(palette_path: str | Path | None = None) -> dict:
+    global _ACTIVE_PALETTE_PATH
+    if palette_path:
+        path = Path(palette_path)
+    elif _ACTIVE_PALETTE_PATH:
+        path = _ACTIVE_PALETTE_PATH
+    else:
+        path = _asset_dir() / "palettes.json"
+    path = path.expanduser().resolve()
+
+    if path not in _PALETTE_CACHE:
+        if not path.exists():
+            raise FileNotFoundError(f"Palette definitions not found: {path}")
+        _PALETTE_CACHE[path] = json.loads(path.read_text(encoding="utf-8"))
+    return _PALETTE_CACHE[path]
+
+
+def register_bundled_fonts(font_dir: str | Path | None = None) -> list[Path]:
+    """Register the bundled IBM Plex font files with Matplotlib."""
+
+    directory = Path(font_dir) if font_dir else _asset_dir() / "fonts"
+    directory = directory.expanduser().resolve()
+    if not directory.exists():
+        warnings.warn(
+            f"Bundled fonts not found at {directory}; Matplotlib will use fallback fonts",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        return []
+
+    fonts = sorted(directory.glob("*.ttf"))
+    for font in fonts:
+        font_manager.fontManager.addfont(str(font))
+    return fonts
+
+
+def set_font_family(
+    families: Sequence[str],
+    base_size: float | None = None,
+) -> None:
+    """Set an ordered font-family fallback list and optional base size."""
+
+    if not families:
+        raise ValueError("at least one font family is required")
+    mpl.rcParams["font.family"] = list(families)
+    if base_size is not None:
+        if base_size <= 0:
+            raise ValueError("base_size must be positive")
+        mpl.rcParams["font.size"] = float(base_size)
+        mpl.rcParams["axes.titlesize"] = float(base_size) + 1
+        mpl.rcParams["axes.labelsize"] = float(base_size)
+        mpl.rcParams["xtick.labelsize"] = max(float(base_size) - 1, 5)
+        mpl.rcParams["ytick.labelsize"] = max(float(base_size) - 1, 5)
+        mpl.rcParams["legend.fontsize"] = max(float(base_size) - 1, 5)
+
+
+def set_typography(profile: str = "sans", base_size: float | None = None) -> None:
+    """Apply a modern sans or scholarly serif typographic profile."""
+
+    profiles = {
+        "sans": ["IBM Plex Sans", "DejaVu Sans"],
+        "serif": ["IBM Plex Serif", "DejaVu Serif"],
+    }
+    key = profile.lower()
+    if key not in profiles:
+        raise ValueError(f"Unknown typography profile: {profile}")
+
+    set_font_family(profiles[key], base_size)
+    if key == "sans":
+        mpl.rcParams["mathtext.rm"] = "IBM Plex Sans"
+        mpl.rcParams["mathtext.it"] = "IBM Plex Sans:italic"
+        mpl.rcParams["mathtext.bf"] = "IBM Plex Sans:semibold"
+    else:
+        mpl.rcParams["mathtext.rm"] = "IBM Plex Serif"
+        mpl.rcParams["mathtext.it"] = "IBM Plex Serif:italic"
+        mpl.rcParams["mathtext.bf"] = "IBM Plex Serif:semibold"
+
+
+def available_palettes(palette_path: str | Path | None = None) -> dict[str, str]:
+    """Return palette keys and user-facing labels."""
+
+    data = _palette_data(palette_path)
+    return {key: value["label"] for key, value in data["palettes"].items()}
+
+
+def palette_colors(
+    name: str = DEFAULT_PALETTE,
+    palette_path: str | Path | None = None,
+) -> tuple[str, ...]:
+    """Return a named categorical palette."""
+
+    data = _palette_data(palette_path)
+    palettes = data["palettes"]
+    if name not in palettes:
+        choices = ", ".join(sorted(palettes))
+        raise ValueError(f"Unknown palette '{name}'. Available: {choices}")
+    return tuple(palettes[name]["colors"])
+
+
+def set_palette(
+    name: str = DEFAULT_PALETTE,
+    palette_path: str | Path | None = None,
+) -> tuple[str, ...]:
+    """Set the Matplotlib color cycle to a named categorical palette."""
+
+    colors = palette_colors(name, palette_path)
+    mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=colors)
+    return colors
+
+
+def colormap(
+    name: str = "sequential",
+    palette_path: str | Path | None = None,
+) -> LinearSegmentedColormap:
+    """Build a perceptually ordered custom continuous color map."""
+
+    data = _palette_data(palette_path)
+    maps = data["colormaps"]
+    if name not in maps:
+        choices = ", ".join(sorted(maps))
+        raise ValueError(f"Unknown colormap '{name}'. Available: {choices}")
+    return LinearSegmentedColormap.from_list(name, maps[name]["colors"])
+
+
+def use_publication_style(
+    style_path: str | Path | None = None,
+    palette: str = DEFAULT_PALETTE,
+    typography: str = "sans",
+    font_dir: str | Path | None = None,
+) -> None:
+    """Load the publication style, bundled fonts, palette, and typography."""
+
+    global _ACTIVE_PALETTE_PATH
     if style_path is None:
-        style_path = Path(__file__).resolve().parents[1] / "assets" / "publication.mplstyle"
+        style_path = _asset_dir() / "publication.mplstyle"
 
     style_path = Path(style_path).expanduser().resolve()
     if not style_path.exists():
         raise FileNotFoundError(f"Matplotlib style not found: {style_path}")
 
+    if font_dir is None:
+        font_dir = style_path.parent / "fonts"
+    register_bundled_fonts(font_dir)
+
     plt.style.use(style_path)
-    mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=PALETTE)
+    set_typography(typography)
+    _ACTIVE_PALETTE_PATH = style_path.parent / "palettes.json"
+    set_palette(palette, _ACTIVE_PALETTE_PATH)
+
     mpl.rcParams["figure.dpi"] = 120
     mpl.rcParams["savefig.transparent"] = False
+    mpl.rcParams["svg.hashsalt"] = "publication-chart-designer"
 
 
 def publication_figure(
@@ -69,7 +237,13 @@ def publication_figure(
         raise ValueError("ratio must be positive")
 
     if "figsize" not in kwargs:
-        inches = FIGURE_WIDTHS.get(width, width) if isinstance(width, str) else width
+        if isinstance(width, str):
+            if width not in FIGURE_WIDTHS:
+                choices = ", ".join(FIGURE_WIDTHS)
+                raise ValueError(f"Unknown width profile '{width}'. Available: {choices}")
+            inches = FIGURE_WIDTHS[width]
+        else:
+            inches = width
         kwargs["figsize"] = (float(inches), float(inches) * ratio)
 
     kwargs.setdefault("layout", "constrained")
@@ -88,7 +262,7 @@ def panel_label(
     options = {
         "ha": "left",
         "va": "bottom",
-        "fontweight": "bold",
+        "fontweight": "semibold",
         "fontsize": 9,
         "color": mpl.rcParams["text.color"],
     }

@@ -5,23 +5,28 @@ Use these patterns as starting points. Preserve the statistical choices and fina
 ## Shared Setup
 
 ```python
-from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from figure_kit import (
-    COLORS,
+    colormap,
     panel_label,
     publication_figure,
     reference_line,
     save_publication_figure,
+    set_palette,
     use_publication_style,
 )
 
-use_publication_style("publication.mplstyle")
+use_publication_style(
+    "assets/publication.mplstyle",
+    palette="editorial",
+    typography="sans",
+)
+colors = set_palette("editorial")
 fig, ax = publication_figure(width="single", ratio=0.64)
 ```
 
-Use `COLORS["blue"]`, `COLORS["vermillion"]`, `COLORS["green"]`, and the other named values from `figure_kit.py` consistently across panels.
+Use `colors[0]`, `colors[1]`, `colors[2]`, and the other values consistently across panels. Reserve gray for context and secondary information.
 
 ## Dot and Interval Plot
 
@@ -39,8 +44,8 @@ ax.errorbar(
     y,
     xerr=np.vstack([estimate - low, high - estimate]),
     fmt="o",
-    color=COLORS["blue"],
-    ecolor=COLORS["blue"],
+    color=colors[0],
+    ecolor=colors[0],
     elinewidth=1.2,
     capsize=2.5,
     markersize=4.5,
@@ -64,7 +69,7 @@ y = np.arange(len(labels))
 
 reference_line(ax, 0, axis="x", label="No association")
 ax.hlines(y, low, high, color="#B8C0CC", linewidth=1.2)
-ax.plot(estimate, y, "o", color=COLORS["blue"], markersize=4.5)
+ax.plot(estimate, y, "o", color=colors[0], markersize=4.5)
 ax.set_yticks(y, labels)
 ax.set_xlabel("Difference in outcome (95% CI)")
 ```
@@ -88,7 +93,7 @@ ax.boxplot(
     showfliers=False,
     patch_artist=True,
     boxprops={"facecolor": "#F3F6FA", "edgecolor": "#64748B"},
-    medianprops={"color": COLORS["blue"], "linewidth": 1.4},
+    medianprops={"color": colors[0], "linewidth": 1.4},
     whiskerprops={"color": "#64748B"},
     capprops={"color": "#64748B"},
 )
@@ -99,7 +104,7 @@ for position, values in enumerate(groups.values(), start=1):
         values,
         s=9,
         alpha=0.45,
-        color=COLORS["blue"] if position == 1 else COLORS["vermillion"],
+        color=colors[0] if position == 1 else colors[1],
         edgecolors="none",
     )
 ax.set_xticks([1, 2], groups.keys())
@@ -117,9 +122,9 @@ series = {
     "Group A": np.array([0.21, 0.24, 0.25, 0.29, 0.31]),
     "Group B": np.array([0.19, 0.20, 0.23, 0.24, 0.27]),
 }
-colors = [COLORS["blue"], COLORS["vermillion"]]
+series_colors = [colors[0], colors[1]]
 
-for (label, values), color in zip(series.items(), colors):
+for (label, values), color in zip(series.items(), series_colors):
     ax.plot(years, values, marker="o", color=color, label=label)
     ax.annotate(
         label,
@@ -148,12 +153,12 @@ ax.scatter(
     y,
     s=13,
     alpha=0.55,
-    color=COLORS["blue"],
+    color=colors[0],
     edgecolors="none",
 )
 
 # Show a fitted line only when its method is stated and appropriate.
-ax.plot(fit_x, fit_y, color=COLORS["vermillion"], linewidth=1.4)
+ax.plot(fit_x, fit_y, color=colors[1], linewidth=1.4)
 ax.set_xlabel("Exposure (units)")
 ax.set_ylabel("Outcome (units)")
 ```
@@ -175,7 +180,7 @@ fig, axes = publication_figure(
 )
 
 for ax, (title, values) in zip(np.ravel(axes), panels.items()):
-    ax.plot(years, values, color=COLORS["blue"], marker="o")
+    ax.plot(years, values, color=colors[0], marker="o")
     ax.set_title(title, loc="left")
 
 for label, ax in zip("ABC", np.ravel(axes)):
@@ -200,6 +205,22 @@ ax.annotate(
 ```
 
 Place labels so they remain inside the exported canvas. Avoid arrows that point to positions not present in the source data.
+
+## Continuous Color
+
+Use a perceptually ordered map for magnitude and a diverging map only around a meaningful midpoint:
+
+```python
+mesh = ax.imshow(
+    values,
+    origin="lower",
+    aspect="auto",
+    cmap=colormap("sequential"),
+)
+fig.colorbar(mesh, ax=ax, label="Exposure (units)")
+```
+
+State what the color encodes and avoid rainbow or jet maps.
 
 ## Export
 

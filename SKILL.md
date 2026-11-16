@@ -1,6 +1,6 @@
 ---
 name: publication-chart-designer
-description: Create, revise, and audit publication-ready charts for academic papers, theses, and research reports, including chart selection, statistical presentation, reproducible Python or R code, journal styling, and export checks. Use when a research figure must be accurate, accessible, and submission-ready; not for dashboards, decorative infographics, or charts whose underlying data would be invented.
+description: Create, revise, and audit polished publication-ready charts for academic papers, theses, and research reports, including chart selection, statistical presentation, reproducible Python or R code, professional typography, accessible palettes, journal sizing, and export checks. Use when a research figure must be accurate, accessible, and submission-ready; not for dashboards, decorative infographics, or charts whose underlying data would be invented.
 ---
 
 # Publication Chart Designer
@@ -49,27 +49,37 @@ A useful design pass is:
 
 ## 4. Build at Final Size
 
-For Matplotlib, start from [assets/publication.mplstyle](assets/publication.mplstyle). Locate it relative to this skill, copy it into the project, and load it explicitly so the script remains portable.
+For Matplotlib, copy the complete [assets/](assets/) directory and [scripts/figure_kit.py](scripts/figure_kit.py) into the project. The assets include the publication style, IBM Plex Sans/Serif fonts under the SIL Open Font License, and the categorical/continuous color definitions.
 
-Copy [scripts/figure_kit.py](scripts/figure_kit.py) and the style file into the analysis project when delivering reusable code. Use the helper for common final-size and export operations:
+Initialize a portable visual system with:
 
 ```python
 from figure_kit import use_publication_style, publication_figure, save_publication_figure
 
-use_publication_style("publication.mplstyle")
+use_publication_style(
+    "assets/publication.mplstyle",
+    palette="editorial",
+    typography="sans",
+)
 fig, ax = publication_figure(width="single", ratio=0.64)
-ax.plot(x, y, color="#0072B2")
+ax.plot(x, y, color="#1F3A5F")
 save_publication_figure(fig, "figures/figure_02_policy_effects")
 ```
 
-For chart-specific Matplotlib patterns, read [references/matplotlib-recipes.md](references/matplotlib-recipes.md). For R, preserve the same decisions with `ggplot2`; do not force Matplotlib dimensions, annotations, or theme behavior onto an R plot.
+Use `palette="editorial"` as the refined default, `palette="accessible"` for the Okabe-Ito set, `palette="ocean"` for cool descriptive figures, or `palette="grayscale"` for print-first work. Use `colormap("sequential")` and `colormap("diverging")` for continuous data.
+
+Read [references/visual-system.md](references/visual-system.md) when choosing typography, categorical colors, continuous scales, or a distinctive visual tone. Read [references/journal-profiles.md](references/journal-profiles.md) when matching a venue or page width.
+
+For chart-specific Matplotlib patterns, read [references/matplotlib-recipes.md](references/matplotlib-recipes.md). For R, preserve the same statistical and perceptual decisions with `ggplot2`; do not force Matplotlib dimensions, annotations, or theme behavior onto an R plot.
 
 Use these defaults unless the venue overrides them:
 
 - single-column width around 3.3–3.5 inches; full-width around 6.5–7.2 inches;
-- sans-serif labels and ticks at final print size, commonly 7–9 pt;
+- IBM Plex Sans for modern multipanel work or IBM Plex Serif for traditional papers;
+- labels and ticks at final print size, commonly 7–9 pt;
 - thin axes and minimal grid lines;
-- colorblind-safe colors plus shape, line-style, or direct-label redundancy;
+- a restrained categorical palette plus shape, line-style, or direct-label redundancy;
+- perceptually ordered sequential or meaningful diverging scales for continuous data;
 - PDF or SVG for manuscripts; 300–600 dpi PNG only when raster output is required;
 - embedded fonts and no text below the venue minimum.
 
@@ -89,9 +99,10 @@ Run the automated export check after rendering:
 
 ```bash
 python scripts/audit_figure.py figures/figure_02_policy_effects.pdf figures/figure_02_policy_effects.png
+python scripts/palette_audit.py --palette editorial
 ```
 
-The check covers basic file and font properties, not statistical correctness or visual legibility. Always inspect the rendered image as well.
+The checks cover basic file, font, and color-separation properties, not statistical correctness or visual legibility. Always inspect the rendered image as well.
 
 ## Deliver
 
