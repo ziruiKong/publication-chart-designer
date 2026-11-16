@@ -28,6 +28,11 @@ Choose a chart from the statistical task, not from decoration. State the compari
 6. Are categories few enough for direct labels?
 7. Will the encoding survive grayscale and common color-vision deficiencies?
 
+Do not treat a forest plot as the automatic “publication” answer. When a figure
+contains only a few group means, a zero-baseline bar chart or small multiples
+can communicate faster and still be rigorous. A forest plot earns its density
+when readers need to compare many estimates, intervals, or model coefficients.
+
 ## Design Rules
 
 - Label the quantity, not the column name.
@@ -35,7 +40,7 @@ Choose a chart from the statistical task, not from decoration. State the compari
 - Prefer a zero baseline for bars and areas unless a justified zoom is essential.
 - Use log scales only when the ratio is meaningful and make that choice explicit.
 - Show sample size, number of observations, or uncertainty where relevant.
-- Use direct labels before adding a legend.
+- Use direct labels when they replace a legend without duplicating a readable axis.
 - Use no more colors than the comparison requires.
 - Use position and length before area, angle, or bubble size.
 - Keep shared scales across comparable small multiples.
@@ -43,6 +48,9 @@ Choose a chart from the statistical task, not from decoration. State the compari
 - Do not claim significance visually unless the underlying test and interval support it.
 - Do not encode two meanings with the same visual channel, such as color for both group and outcome level.
 - Make missing or excluded data visible when exclusion is decision-relevant.
+- Remove direct labels or value columns that merely repeat what a readable axis already shows.
+- Put constant sample-size information in one place rather than every row.
+- If more than one comparison competes for attention, use small multiples instead of stacking both dimensions into one dense panel.
 
 ## Uncertainty
 

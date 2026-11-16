@@ -45,7 +45,16 @@ A useful design pass is:
 
 1. Sketch the groups, observations, baseline, and comparison in grayscale at final physical size.
 2. Remove marks that do not support the stated claim.
-3. Add direct labels and the minimum color, shape, or line-style distinctions needed.
+3. Add only the labels and color, shape, or line-style distinctions that reduce search time; do not label every mark.
+
+Apply a clarity budget before adding detail:
+
+- Prefer one primary comparison per panel. Split overall and subgroup views into panels when a single chart would exceed roughly 8–10 estimate rows.
+- Do not duplicate the axis with a per-row value column unless exact values are essential.
+- State constant sample sizes once, in a subtitle, caption, or panel note rather than repeating them on every row.
+- Use a forest or coefficient plot for many estimates that require precision comparisons. Use a clean bar chart or small multiples when a few means need to be understood quickly.
+- Keep the most important ordering visible at thumbnail size. If a reader must study labels to discover the main comparison, simplify before styling.
+- Apply at most two emphasis devices, such as color and direct labels. More emphasis everywhere removes hierarchy.
 
 ## 4. Build at Final Size
 

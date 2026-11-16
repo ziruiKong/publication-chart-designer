@@ -48,6 +48,9 @@ Use this checklist before and after rendering. It supplements, rather than repla
 - Titles, subtitles, and annotations do not repeat the caption unnecessarily.
 - Decimal precision is consistent and no more precise than the measurement supports.
 - Units appear in axis labels, tick labels, or direct annotations.
+- The figure does not duplicate the axis with a full column of values unless exact values are essential.
+- Constant sample sizes are stated once rather than repeated in every category.
+- At most two emphasis devices dominate: for example color plus direct labels, not color, arrows, boxes, and bold text together.
 
 ## Export
 
@@ -66,5 +69,6 @@ Use this checklist before and after rendering. It supplements, rather than repla
 4. Compare it with the underlying table or raw data for at least one plotted value.
 5. Check one interval, one extreme observation, and one annotation back to the source.
 6. Confirm the caption and alt text describe what is actually visible.
+7. Shrink the figure enough that the main comparison should remain obvious. If it disappears, the design is too dense.
 
 Report unresolved issues instead of concealing them with styling.

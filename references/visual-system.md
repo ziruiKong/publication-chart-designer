@@ -97,6 +97,17 @@ Order categorical colors deliberately:
 
 Do not choose colors merely to maximize difference; the palette should still feel like one designed system.
 
+## Restraint
+
+The visual system should reduce reading effort. It should not become a second
+layer of information.
+
+- Use color, weight, labels, and whitespace to create one hierarchy.
+- Keep neutral space around the main comparison; do not fill every gap.
+- Use one title and one explanatory subtitle at most.
+- Do not repeat the axis with a value column, a direct label on every mark, and a table-like annotation block all at once.
+- If the figure looks more complex after styling than the exploratory draft, remove something.
+
 ## Audit
 
 Run the palette audit after changing colors:
