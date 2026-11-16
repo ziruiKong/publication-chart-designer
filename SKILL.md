@@ -1,63 +1,106 @@
 ---
 name: publication-chart-designer
-description: Design and implement publication-ready charts for academic papers, theses, and research reports, including chart choice, reproducible Python or R code, journal styling, and export checks. Use when a research figure must be accurate, accessible, and submission-ready; not for dashboards, decorative infographics, or charts whose underlying data would be invented.
+description: Create, revise, and audit publication-ready charts for academic papers, theses, and research reports, including chart selection, statistical presentation, reproducible Python or R code, journal styling, and export checks. Use when a research figure must be accurate, accessible, and submission-ready; not for dashboards, decorative infographics, or charts whose underlying data would be invented.
 ---
 
 # Publication Chart Designer
 
-Create figures that communicate one defensible research finding without visual distortion. Unless the user asks only for advice, deliver the figure, the code that reproduces it, a concise caption, and alt text.
+Create a figure that makes one defensible research finding easier to understand without exaggerating or hiding uncertainty. Unless the user asks only for advice, deliver the rendered figure, reproducible code, a concise caption, and alt text.
 
-## Establish the Figure Contract
+## 1. Establish the Figure Contract
 
 Before styling, identify:
 
-- The claim or comparison the figure must support.
-- The data source, variables, units, and sample size.
-- The target venue, column width, file format, and any journal style rules.
-- Whether the chart is destined for a paper, thesis, slide, poster, or web supplement.
+- the claim or comparison the figure must support;
+- the observation unit, sample size, variables, and units;
+- the source of every value, interval, and annotation;
+- the target venue and its physical dimensions, font rules, and file format;
+- whether the figure is for print, slides, a poster, or a web supplement.
 
-Use actual data. Never fabricate values, uncertainty, significance, or trends. If source data are unavailable, either request them or clearly label a schematic as a design mockup rather than a result.
+If a detail is missing but not blocking, use a conservative default and state it. Do not silently change the comparison, exclude observations, or convert uncertainty into a stronger claim.
 
-## Choose the Chart From the Statistical Task
+Use actual data. Never fabricate values, uncertainty, significance, trends, or geographic patterns. If source data are unavailable, request them or label a schematic explicitly as a design mockup rather than a result.
 
-- Read [references/chart-selection.md](references/chart-selection.md) when choosing among chart types or when the requested chart could misrepresent the comparison.
-- Prefer direct comparisons, position, and length over area, angle, or volume.
-- Show distributions when central tendencies could hide heterogeneity.
-- Show uncertainty whenever the figure supports an inferential claim.
-- Use a single axis unless a dual-axis display is unavoidable and explicitly justified.
+## 2. Audit the Data and Inference
 
-## Apply Publication Style
+Resolve these items before choosing a visual encoding:
 
-Start from [assets/publication.mplstyle](assets/publication.mplstyle) for Matplotlib projects. Copy the style file into the working project and load it with `plt.style.use(...)` so the output remains reproducible.
+- denominator and missing-data handling;
+- exclusions, transformations, weights, and model adjustments;
+- whether intervals are confidence intervals, credible intervals, standard errors, standard deviations, ranges, or quantiles;
+- whether annotations and labels were computed from the same data shown in the figure;
+- whether a fitted line is descriptive or supports a causal interpretation.
+
+Compute summaries and uncertainty in code rather than typing plotted values into the chart. State the interval definition in the caption or panel note. Do not use asterisks or color alone to imply significance.
+
+For a detailed preflight review, read [references/figure-review.md](references/figure-review.md).
+
+## 3. Choose the Visual Encoding
+
+Read [references/chart-selection.md](references/chart-selection.md) when choosing among chart types or when the requested chart could misrepresent the comparison.
+
+Prefer position and length over area, angle, or volume. Use a single shared axis when panels invite comparison. For bar and area charts, start at zero unless a zoom is essential and unmistakably signaled. Use log scales only when ratios are meaningful.
+
+A useful design pass is:
+
+1. Sketch the groups, observations, baseline, and comparison in grayscale at final physical size.
+2. Remove marks that do not support the stated claim.
+3. Add direct labels and the minimum color, shape, or line-style distinctions needed.
+
+## 4. Build at Final Size
+
+For Matplotlib, start from [assets/publication.mplstyle](assets/publication.mplstyle). Locate it relative to this skill, copy it into the project, and load it explicitly so the script remains portable.
+
+Copy [scripts/figure_kit.py](scripts/figure_kit.py) and the style file into the analysis project when delivering reusable code. Use the helper for common final-size and export operations:
+
+```python
+from figure_kit import use_publication_style, publication_figure, save_publication_figure
+
+use_publication_style("publication.mplstyle")
+fig, ax = publication_figure(width="single", ratio=0.64)
+ax.plot(x, y, color="#0072B2")
+save_publication_figure(fig, "figures/figure_02_policy_effects")
+```
+
+For chart-specific Matplotlib patterns, read [references/matplotlib-recipes.md](references/matplotlib-recipes.md). For R, preserve the same decisions with `ggplot2`; do not force Matplotlib dimensions, annotations, or theme behavior onto an R plot.
 
 Use these defaults unless the venue overrides them:
 
-- Single-column width around 3.3–3.5 inches; full-width around 6.5–7.2 inches.
-- Sans-serif type for labels and ticks, typically 7–9 pt at final print size.
-- Thin axes, minimal grid lines, and no chart junk or heavy shadows.
-- Colorblind-safe colors with distinct markers, line styles, or direct labels so meaning survives grayscale reproduction.
-- Vector output such as PDF or SVG for manuscripts; 300–600 dpi PNG only when a raster format is required.
-- Embed fonts and avoid text smaller than the journal’s minimum.
+- single-column width around 3.3–3.5 inches; full-width around 6.5–7.2 inches;
+- sans-serif labels and ticks at final print size, commonly 7–9 pt;
+- thin axes and minimal grid lines;
+- colorblind-safe colors plus shape, line-style, or direct-label redundancy;
+- PDF or SVG for manuscripts; 300–600 dpi PNG only when raster output is required;
+- embedded fonts and no text below the venue minimum.
 
-For R users, translate the same decisions to `ggplot2`; do not change the statistical message merely to fit a template.
+## 5. Review the Rendered Figure
 
-## Build and Check
+Render at the intended physical dimensions and inspect the actual output. Check:
 
-1. Compute summaries and uncertainty in code rather than typing values into the plotting call.
-2. Label axes with variables and units; keep panel labels consistent.
-3. Make legends unnecessary when direct labels are clearer.
-4. Render at final dimensions and inspect the exported image, not only the plotting code.
-5. Check clipping, overlapping labels, unreadable grayscale encoding, inconsistent decimals, and accidental visual exaggeration.
-6. Verify that every value and annotation traces back to the supplied data.
+- the stated claim is visible without reading the surrounding paper;
+- axes, units, denominator, and uncertainty definition are explicit;
+- labels do not collide, clip, or shrink below the intended size;
+- category distinctions survive grayscale and common color-vision deficiencies;
+- zero baselines, log scales, smoothing, and fitted curves do not imply more than the data support;
+- panels are ordered and labelled consistently;
+- the figure remains legible when viewed at 100% print size.
 
-Save the plotting script beside the generated figure and use a stable stem such as `figure_02_policy_effects.py`, `.pdf`, `.svg`, and `.png`.
+Run the automated export check after rendering:
+
+```bash
+python scripts/audit_figure.py figures/figure_02_policy_effects.pdf figures/figure_02_policy_effects.png
+```
+
+The check covers basic file and font properties, not statistical correctness or visual legibility. Always inspect the rendered image as well.
 
 ## Deliver
 
+Use a stable stem that identifies the figure in context, such as `figure_02_policy_effects.py`, `.pdf`, `.svg`, and `.png`. Keep the plotting script beside the outputs.
+
 Provide:
 
-- The figure in the requested format and size.
-- Reproducible code with paths or data-loading instructions.
-- A caption that states what is shown, the sample, the uncertainty representation, and the takeaway.
-- Alt text that describes the visual structure and the finding without repeating the full caption.
-- A short note on any assumption, excluded observation, or unresolved data issue.
+- the figure in the requested format and physical size;
+- reproducible code with paths or data-loading instructions;
+- a caption stating what is shown, the sample, the uncertainty representation, and the bounded takeaway;
+- alt text describing the visual structure and finding without repeating the full caption;
+- a short note on assumptions, exclusions, or unresolved data issues.
