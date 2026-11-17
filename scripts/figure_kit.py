@@ -122,6 +122,7 @@ def set_font_family(
             raise ValueError("base_size must be positive")
         mpl.rcParams["font.size"] = float(base_size)
         mpl.rcParams["axes.titlesize"] = float(base_size) + 1
+        mpl.rcParams["figure.titlesize"] = float(base_size) + 3
         mpl.rcParams["axes.labelsize"] = float(base_size)
         mpl.rcParams["xtick.labelsize"] = max(float(base_size) - 1, 5)
         mpl.rcParams["ytick.labelsize"] = max(float(base_size) - 1, 5)
@@ -201,10 +202,15 @@ def use_publication_style(
     palette: str = DEFAULT_PALETTE,
     typography: str = "sans",
     font_dir: str | Path | None = None,
+    context: str = "paper",
+    language: str = "en",
 ) -> None:
     """Load the publication style, bundled fonts, palette, and typography."""
 
     global _ACTIVE_PALETTE_PATH
+    sizes = {"paper": 8, "screen": 11, "slide": 14, "poster": 18}
+    if context not in sizes or language not in {"en", "zh"}:
+        raise ValueError("context: paper/screen/slide/poster; language: en/zh")
     if style_path is None:
         style_path = _asset_dir() / "publication.mplstyle"
 
@@ -217,7 +223,15 @@ def use_publication_style(
     register_bundled_fonts(font_dir)
 
     plt.style.use(style_path)
-    set_typography(typography)
+    set_typography(typography, base_size=sizes[context])
+    if language == "zh":
+        installed = {font.name for font in font_manager.fontManager.ttflist}
+        candidates = ["Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Source Han Sans SC", "SimHei"]
+        cjk = next((name for name in candidates if name in installed), None)
+        if cjk:
+            set_font_family([cjk, *mpl.rcParams["font.family"]])
+        else:
+            warnings.warn("No Chinese font detected; install Noto Sans CJK SC before rendering Chinese labels", RuntimeWarning, stacklevel=2)
     _ACTIVE_PALETTE_PATH = style_path.parent / "palettes.json"
     set_palette(palette, _ACTIVE_PALETTE_PATH)
 
@@ -250,6 +264,33 @@ def publication_figure(
     return plt.subplots(**kwargs)
 
 
+def refine_axes(ax, grid: str | None = "y", max_ticks: int = 5):
+    """Apply flat geometry to a numeric plot without changing its data limits.
+
+    Skip tick locators for dates, log scales, and categorical axes; configure
+    those locators explicitly. Call after plotting to detect unit converters.
+    """
+    from matplotlib.ticker import MaxNLocator
+
+    if grid not in {None, "x", "y", "both"} or max_ticks < 2:
+        raise ValueError("grid: None/x/y/both; max_ticks must be at least 2")
+    ax.spines[["top", "right", "bottom", "left"]].set_visible(True)
+    for spine in ax.spines.values():
+        spine.set_color(mpl.rcParams["axes.edgecolor"])
+        spine.set_linewidth(mpl.rcParams["axes.linewidth"])
+    ax.set_axisbelow(True)
+    ax.grid(False, which="both")
+    if grid:
+        ax.grid(True, axis=grid, which="major")
+    ax.tick_params(which="major", pad=4, direction="in", length=3.2, width=0.8)
+    for axis in (ax.xaxis, ax.yaxis):
+        if axis.get_scale() == "linear" and axis.get_converter() is None:
+            from matplotlib.ticker import FixedLocator
+            if not isinstance(axis.get_major_locator(), FixedLocator):
+                axis.set_major_locator(MaxNLocator(nbins=max_ticks - 1))
+    return ax
+
+
 def panel_label(
     ax,
     label: str,
@@ -263,11 +304,34 @@ def panel_label(
         "ha": "left",
         "va": "bottom",
         "fontweight": "semibold",
-        "fontsize": 9,
+        "fontsize": mpl.rcParams["font.size"] + 1,
         "color": mpl.rcParams["text.color"],
     }
     options.update(kwargs)
     return ax.text(x, y, label, transform=ax.transAxes, clip_on=False, **options)
+
+
+def role_text(ax, x: float, y: float, text: str, role: str = "annotation", **kwargs):
+    """Place axes-fraction prose with explicit weight and upright style.
+
+    Put scientific italic in mathtext, e.g. r'$p$ = 0.03', rather than making
+    a complete annotation italic. Venue conventions override the defaults.
+    """
+    base = float(mpl.rcParams["font.size"])
+    roles = {
+        "title": (base + 2, "semibold", "#172B3A"),
+        "panel": (base + 1, "semibold", "#172B3A"),
+        "body": (base, "normal", "#263746"),
+        "annotation": (base - 1, "normal", "#465966"),
+        "note": (base - 1, "normal", "#64748B"),
+    }
+    if role not in roles:
+        raise ValueError(f"Unknown text role: {role}")
+    size, weight, color = roles[role]
+    options = dict(transform=ax.transAxes, fontsize=size, fontweight=weight,
+                   fontstyle="normal", color=color, ha="left", va="top")
+    options.update(kwargs)
+    return ax.text(x, y, text, **options)
 
 
 def reference_line(
@@ -330,8 +394,9 @@ def save_publication_figure(
     pad_inches: float = 0.02,
     metadata: dict[str, str] | None = None,
     close: bool = True,
+    crop: bool = False,
 ) -> list[Path]:
-    """Save one figure to a stable stem in each requested format."""
+    """Save at the declared physical size; opt into tight cropping explicitly."""
 
     target = Path(stem).expanduser()
     if target.suffix:
@@ -347,7 +412,7 @@ def save_publication_figure(
         path = target.with_suffix(f".{fmt}")
         options = {
             "format": fmt,
-            "bbox_inches": "tight",
+            "bbox_inches": "tight" if crop else None,
             "pad_inches": pad_inches,
             "transparent": transparent,
         }
@@ -356,7 +421,14 @@ def save_publication_figure(
         if metadata and fmt in {"pdf", "svg", "png"}:
             options["metadata"] = metadata
 
-        fig.savefig(path, **options)
+        with mpl.rc_context({"savefig.bbox": "standard"}):
+            fig.savefig(path, **options)
+        if fmt == "svg":
+            # Matplotlib emits trailing spaces inside path definitions. Keep
+            # generated SVGs clean in version control without changing geometry.
+            svg = path.read_text(encoding="utf-8")
+            path.write_text("\n".join(line.rstrip() for line in svg.splitlines()) + "\n",
+                            encoding="utf-8", newline="\n")
         paths.append(path)
 
     if close:
