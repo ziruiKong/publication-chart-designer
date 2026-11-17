@@ -96,7 +96,7 @@ Use these defaults unless the venue overrides them:
 - single-column width around 3.3–3.5 inches; full-width around 6.5–7.2 inches;
 - IBM Plex Sans for modern multipanel work or IBM Plex Serif for traditional papers;
 - labels and ticks at final print size, commonly 7–9 pt;
-- thin axes and minimal grid lines;
+- a precise four-sided frame, inward ticks, and light measurement-axis grid lines;
 - a restrained categorical palette plus shape, line-style, or direct-label redundancy;
 - perceptually ordered sequential or meaningful diverging scales for continuous data;
 - PDF or SVG for manuscripts; 300–600 dpi PNG only when raster output is required;
@@ -114,7 +114,7 @@ Render at the intended physical dimensions and inspect the actual output. Check:
 - panels are ordered and labelled consistently;
 - the figure remains legible when viewed at 100% print size.
 
-Also inspect a thumbnail: grouping and reading order should remain visible, panel geometry should be balanced, and recurring title baselines should align. Inspect the full-size output for detailed evidence. Use `refine_axes(ax, grid="y")` after numeric plotting for quiet grids. Avoid decorative shadows, categorical gradients, fake 3D extrusion, pill bars, and dashboard card frames. Genuine 3D surfaces and trajectories are supported with matched projections. Heatmap cell geometry should reflect the matrix and annotation tracks; dense expression matrices may use rectangular cells.
+Also inspect a thumbnail: grouping and reading order should remain visible, panel geometry should be balanced, and recurring title baselines should align. Keep the four-sided axes frame visible and make data marks clearly darker than the grid. Inspect the full-size output for detailed evidence. Use `refine_axes(ax, grid="y")` after numeric plotting for quiet grids. Reserve enough of the canvas for the plot rectangles; oversized headings and footnotes must not squeeze the data area. Avoid decorative shadows, categorical gradients, fake 3D extrusion, pill bars, and dashboard card frames. Genuine 3D surfaces and trajectories are supported with matched projections. Heatmap cell geometry should reflect the matrix and annotation tracks; dense expression matrices may use rectangular cells.
 
 Run the automated export check after rendering:
 

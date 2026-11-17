@@ -8,7 +8,7 @@
   "data_sha256": "f235d4d70426ead2df93c28ca536369f11b3915c7b0c54a876e8f041071e5496",
   "shared_analysis": "Welch + BH; top-50 q selection; row z-score; average-linkage Euclidean clustering; centered PCA",
   "baseline": "Matplotlib defaults + constrained 2x3 layout; no intentional degradation",
-  "after": "Skill typography, color system, integrated dendrogram, panel hierarchy, legend/method zones",
+  "after": "Skill typography, semantic palette, four-sided frames, aligned panel hierarchy, and method notes",
   "canvas_inches": [
     16,
     9

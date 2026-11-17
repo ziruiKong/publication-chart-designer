@@ -2,7 +2,7 @@
 
 **有辨识度的科研图版：丰富信息，精密排版，鲜明秩序。**
 
-![Integrated five-panel scientific plate](docs/gallery/domains/integrated-research-plate.png)
+![Integrated six-panel scientific plate](docs/gallery/domains/integrated-research-plate.png)
 
 *以上为合成演示数据，仅展示布局，不代表研究结论。*
 
@@ -14,8 +14,8 @@
 
 ![Eight-domain overview](docs/gallery/domains/domain-atlas.png)
 
-主页首图将同一实验的火山图、PCA、样本摘要、效应分布、聚类树与表达热图编排为一张综合图版。
-各视图共享数据来源，图形层、分组、标题、图例和方法说明按统一网格组织。
+主页首图将同一实验的火山图、PCA、样本摘要、效应分布、聚类树与表达热图编排为一张六面板综合图版。
+各视图共享数据来源，图形层、分组、标题、图例和方法说明按统一网格组织；六个绘图区等宽并保留四侧边框。
 
 | 领域 | 本仓库可运行示例 | 数据复杂度 |
 | --- | --- | --- |
@@ -47,8 +47,8 @@ python scripts/render_domain_gallery.py
 ![Default Matplotlib compared with the skill](docs/gallery/comparison/comparison.png)
 
 左：Matplotlib 默认样式，使用正常的 constrained layout；右：使用本 skill 的科研图版编排。
-两者使用相同的 2,000 × 16 合成数据、统计分析、筛选规则和 16 × 9 英寸画布，
-差别来自字体层级、配色、面板比例、聚类树整合和图例/方法区域，并未刻意降低默认版质量。
+两者使用相同的 2,000 × 16 合成数据、统计分析、筛选规则、2 × 3 六面板结构和 16 × 9 英寸画布；
+技能版通过统一字体角色、语义配色、面板标题、四侧边框、测量轴网格和方法栏展现层级与秩序。
 单图：[普通版](docs/gallery/comparison/before-default.png) · [Skill 版](docs/gallery/comparison/after-skill.png)。
 
 ```bash

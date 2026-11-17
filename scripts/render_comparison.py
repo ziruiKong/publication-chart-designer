@@ -1,4 +1,4 @@
-"""Fair style comparison: same synthetic data, analysis, dimensions and marks.
+"""Fair style comparison: same data and analyses, matched canvas and panel geometry.
 
 The ordinary version uses Matplotlib defaults with constrained layout; it is
 not intentionally crowded or degraded. The skill version composes the same
@@ -98,7 +98,7 @@ def main(output):
         "data_sha256":hashlib.sha256(data.tobytes()).hexdigest(),
         "shared_analysis":"Welch + BH; top-50 q selection; row z-score; average-linkage Euclidean clustering; centered PCA",
         "baseline":"Matplotlib defaults + constrained 2x3 layout; no intentional degradation",
-        "after":"Skill typography, color system, integrated dendrogram, panel hierarchy, legend/method zones",
+        "after":"Skill typography, semantic palette, four-sided frames, aligned panel hierarchy, and method notes",
         "canvas_inches":[16,9],"differences_are_design_not_model_performance":True
     },indent=2),encoding="utf-8")
     print(output/"comparison.png")

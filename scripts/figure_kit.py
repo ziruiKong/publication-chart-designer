@@ -274,12 +274,15 @@ def refine_axes(ax, grid: str | None = "y", max_ticks: int = 5):
 
     if grid not in {None, "x", "y", "both"} or max_ticks < 2:
         raise ValueError("grid: None/x/y/both; max_ticks must be at least 2")
-    ax.spines[["top", "right"]].set_visible(False)
+    ax.spines[["top", "right", "bottom", "left"]].set_visible(True)
+    for spine in ax.spines.values():
+        spine.set_color(mpl.rcParams["axes.edgecolor"])
+        spine.set_linewidth(mpl.rcParams["axes.linewidth"])
     ax.set_axisbelow(True)
     ax.grid(False, which="both")
     if grid:
         ax.grid(True, axis=grid, which="major")
-    ax.tick_params(which="major", pad=4)
+    ax.tick_params(which="major", pad=4, direction="in", length=3.2, width=0.8)
     for axis in (ax.xaxis, ax.yaxis):
         if axis.get_scale() == "linear" and axis.get_converter() is None:
             from matplotlib.ticker import FixedLocator

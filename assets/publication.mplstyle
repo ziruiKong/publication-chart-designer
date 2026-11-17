@@ -11,10 +11,10 @@ ytick.labelsize: 7
 legend.fontsize: 7
 legend.title_fontsize: 7
 figure.titlesize: 9
-axes.linewidth: 0.6
-axes.spines.top: False
-axes.spines.right: False
-axes.edgecolor: "#333333"
+axes.linewidth: 0.85
+axes.spines.top: True
+axes.spines.right: True
+axes.edgecolor: "#34414D"
 axes.labelcolor: "#111111"
 axes.titlecolor: "#111111"
 axes.titleweight: semibold
@@ -29,8 +29,8 @@ xtick.major.width: 0.8
 ytick.major.width: 0.8
 xtick.major.size: 3
 ytick.major.size: 3
-xtick.direction: out
-ytick.direction: out
+xtick.direction: in
+ytick.direction: in
 xtick.minor.size: 1.5
 ytick.minor.size: 1.5
 lines.linewidth: 1.4
@@ -46,8 +46,8 @@ legend.handlelength: 1.8
 legend.handletextpad: 0.6
 legend.labelspacing: 0.4
 legend.borderaxespad: 0.5
-grid.color: "#E3E8EC"
-grid.linewidth: 0.5
+grid.color: "#DCE3E9"
+grid.linewidth: 0.55
 grid.alpha: 1.0
 hatch.linewidth: 0.6
 text.antialiased: True
