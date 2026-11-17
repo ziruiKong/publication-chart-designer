@@ -1,6 +1,6 @@
 ---
 name: publication-chart-designer
-description: Create, revise, and audit polished publication-ready charts for academic papers, theses, and research reports, including chart selection, statistical presentation, reproducible Python or R code, professional typography, accessible palettes, journal sizing, and export checks. Use when a research figure must be accurate, accessible, and submission-ready; not for dashboards, decorative infographics, or charts whose underlying data would be invented.
+description: Create, revise, and audit publication-ready research figures for AI, physical science, genuine 3D data, academic comparisons, statistical tests, regression, machine learning, and bioinformatics. Use for complex scientific data, disciplined typography, reproducible Python or R plots, uncertainty, journal sizing, and export review; not decorative dashboards or invented research results.
 ---
 
 # Publication Chart Designer
@@ -37,6 +37,8 @@ For a detailed preflight review, read [references/figure-review.md](references/f
 
 ## 3. Choose the Visual Encoding
 
+For the eight scientific domains, read the relevant section of [references/domain-atlas.md](references/domain-atlas.md) for specialized encodings and analysis prerequisites. [scripts/render_domain_gallery.py](scripts/render_domain_gallery.py) provides eight runnable two-panel examples using explicit synthetic data and computed results. Adapt them to actual data; they do not replace scientific model validation.
+
 Read [references/chart-selection.md](references/chart-selection.md) when choosing among chart types or when the requested chart could misrepresent the comparison. After choosing a type, read the matching section of [references/chart-playbook.md](references/chart-playbook.md) for production defaults and text limits. Design claims in the playbook are grounded in [references/evidence.md](references/evidence.md).
 
 Prefer position and length over area, angle, or volume. Use a single shared axis when panels invite comparison. For bar and area charts, start at zero unless a zoom is essential and unmistakably signaled. Use log scales only when ratios are meaningful.
@@ -49,18 +51,20 @@ A useful design pass is:
 
 Apply a clarity budget before adding detail:
 
-- Prefer one primary comparison per panel. Split overall and subgroup views into panels when a single chart would exceed roughly 8–10 estimate rows.
+- Give each panel a clear analytical role. For many estimates, use grouped rows, adequate height, and coordinated summary/detail panels; do not impose an arbitrary row ceiling that hides useful evidence.
 - Do not duplicate the axis with a per-row value column unless exact values are essential.
 - State constant sample sizes once, in a subtitle, caption, or panel note rather than repeating them on every row.
 - Use a forest or coefficient plot for many estimates that require precision comparisons. Use a clean bar chart or small multiples when a few means need to be understood quickly.
-- Keep the most important ordering visible at thumbnail size. If a reader must study labels to discover the main comparison, simplify before styling.
+- Keep the main grouping and reading order visible at thumbnail size. Recompose the hierarchy when needed; complexity is welcome when it is organized and scientifically useful.
 - Apply at most two emphasis devices, such as color and direct labels. More emphasis everywhere removes hierarchy.
 
 Treat the figure and caption as one unit. Put sample size, exclusion rules, transformations, interval definitions, and model details in the caption unless the figure must stand alone. Keep titles, panel names, axes, and genuinely decoding annotations in the plot itself.
 
 ## 4. Build at Final Size
 
-Use the flat, orderly visual direction in [references/flat-layout.md](references/flat-layout.md) before composing a figure. Start from [scripts/render_gallery.py](scripts/render_gallery.py) when a trend, bar, interval, or heatmap layout fits. Keep identical panel boxes, even spacing, restrained marks, and a clear reading order. Do not treat a new palette alone as a design improvement.
+Read [references/typography.md](references/typography.md) for weight, upright/italic scientific notation, and final-size hierarchy. Treat text roles deliberately; do not italicize an entire axis label to style a variable. `role_text()` supports consistent prose annotations, and mathtext handles mixed scientific notation.
+
+Use the editorial composition in [references/flat-layout.md](references/flat-layout.md) before drawing. The goal is distinctive, premium visual order rather than minimalism: rich evidence, disciplined typography, modular alignment, deliberate proportions, shared legends and a coherent hierarchy. Start with [scripts/render_domain_gallery.py](scripts/render_domain_gallery.py) for complex scientific plates; the smaller [scripts/render_gallery.py](scripts/render_gallery.py) remains a basic example. Give equal comparisons equal geometry, and use deliberate unequal panels for overview/detail. A new palette alone is not a design improvement.
 
 For Matplotlib, copy the complete [assets/](assets/) directory and [scripts/figure_kit.py](scripts/figure_kit.py) into the project. The assets include the publication style, IBM Plex Sans/Serif fonts under the SIL Open Font License, and the categorical/continuous color definitions.
 
@@ -110,7 +114,7 @@ Render at the intended physical dimensions and inspect the actual output. Check:
 - panels are ordered and labelled consistently;
 - the figure remains legible when viewed at 100% print size.
 
-Also inspect a thumbnail: the main comparison should remain visible, panel geometry should be balanced, and titles should align. Use `refine_axes(ax, grid="y")` after numeric plotting for restrained one-direction grids. Do not add shadows, gradients on categorical marks, 3D, pill bars, or decorative card frames. Heatmap cell geometry should reflect the matrix rather than being stretched to fill spare space.
+Also inspect a thumbnail: grouping and reading order should remain visible, panel geometry should be balanced, and recurring title baselines should align. Inspect the full-size output for detailed evidence. Use `refine_axes(ax, grid="y")` after numeric plotting for quiet grids. Avoid decorative shadows, categorical gradients, fake 3D extrusion, pill bars, and dashboard card frames. Genuine 3D surfaces and trajectories are supported with matched projections. Heatmap cell geometry should reflect the matrix and annotation tracks; dense expression matrices may use rectangular cells.
 
 Run the automated export check after rendering:
 

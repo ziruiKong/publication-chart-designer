@@ -4,6 +4,11 @@ Use this reference when the user asks for a polished, distinctive, or journal-li
 
 ## Typography
 
+For precise text roles, weights, upright/italic notation, and mathematical units,
+read [typography.md](typography.md). For the user's preferred rich, ordered
+scientific plates, read [flat-layout.md](flat-layout.md); simplicity alone does
+not meet the visual goal.
+
 The skill bundles IBM Plex Sans and IBM Plex Serif under the SIL Open Font License. Register the bundled font files before rendering; `use_publication_style()` does this automatically.
 
 Use one of two typographic profiles:

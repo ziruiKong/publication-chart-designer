@@ -2,6 +2,8 @@ font.family: sans-serif
 font.sans-serif: IBM Plex Sans, DejaVu Sans
 font.serif: IBM Plex Serif, DejaVu Serif
 font.size: 8
+font.weight: normal
+font.style: normal
 axes.titlesize: 9
 axes.labelsize: 8
 xtick.labelsize: 7
@@ -15,7 +17,7 @@ axes.spines.right: False
 axes.edgecolor: "#333333"
 axes.labelcolor: "#111111"
 axes.titlecolor: "#111111"
-axes.titleweight: normal
+axes.titleweight: semibold
 axes.titlelocation: left
 axes.titlepad: 10
 axes.labelpad: 5
@@ -51,6 +53,7 @@ hatch.linewidth: 0.6
 text.antialiased: True
 axes.unicode_minus: True
 figure.facecolor: white
+figure.titleweight: semibold
 axes.facecolor: white
 savefig.dpi: 600
 savefig.bbox: standard

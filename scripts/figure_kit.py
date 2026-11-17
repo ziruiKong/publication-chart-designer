@@ -122,6 +122,7 @@ def set_font_family(
             raise ValueError("base_size must be positive")
         mpl.rcParams["font.size"] = float(base_size)
         mpl.rcParams["axes.titlesize"] = float(base_size) + 1
+        mpl.rcParams["figure.titlesize"] = float(base_size) + 3
         mpl.rcParams["axes.labelsize"] = float(base_size)
         mpl.rcParams["xtick.labelsize"] = max(float(base_size) - 1, 5)
         mpl.rcParams["ytick.labelsize"] = max(float(base_size) - 1, 5)
@@ -300,11 +301,34 @@ def panel_label(
         "ha": "left",
         "va": "bottom",
         "fontweight": "semibold",
-        "fontsize": 9,
+        "fontsize": mpl.rcParams["font.size"] + 1,
         "color": mpl.rcParams["text.color"],
     }
     options.update(kwargs)
     return ax.text(x, y, label, transform=ax.transAxes, clip_on=False, **options)
+
+
+def role_text(ax, x: float, y: float, text: str, role: str = "annotation", **kwargs):
+    """Place axes-fraction prose with explicit weight and upright style.
+
+    Put scientific italic in mathtext, e.g. r'$p$ = 0.03', rather than making
+    a complete annotation italic. Venue conventions override the defaults.
+    """
+    base = float(mpl.rcParams["font.size"])
+    roles = {
+        "title": (base + 2, "semibold", "#172B3A"),
+        "panel": (base + 1, "semibold", "#172B3A"),
+        "body": (base, "normal", "#263746"),
+        "annotation": (base - 1, "normal", "#465966"),
+        "note": (base - 1, "normal", "#64748B"),
+    }
+    if role not in roles:
+        raise ValueError(f"Unknown text role: {role}")
+    size, weight, color = roles[role]
+    options = dict(transform=ax.transAxes, fontsize=size, fontweight=weight,
+                   fontstyle="normal", color=color, ha="left", va="top")
+    options.update(kwargs)
+    return ax.text(x, y, text, **options)
 
 
 def reference_line(
