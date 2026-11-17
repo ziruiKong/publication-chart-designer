@@ -60,6 +60,8 @@ Treat the figure and caption as one unit. Put sample size, exclusion rules, tran
 
 ## 4. Build at Final Size
 
+Use the flat, orderly visual direction in [references/flat-layout.md](references/flat-layout.md) before composing a figure. Start from [scripts/render_gallery.py](scripts/render_gallery.py) when a trend, bar, interval, or heatmap layout fits. Keep identical panel boxes, even spacing, restrained marks, and a clear reading order. Do not treat a new palette alone as a design improvement.
+
 For Matplotlib, copy the complete [assets/](assets/) directory and [scripts/figure_kit.py](scripts/figure_kit.py) into the project. The assets include the publication style, IBM Plex Sans/Serif fonts under the SIL Open Font License, and the categorical/continuous color definitions.
 
 Initialize a portable visual system with:
@@ -71,6 +73,8 @@ use_publication_style(
     "assets/publication.mplstyle",
     palette="editorial",
     typography="sans",
+    context="paper",  # screen / slide / poster use larger type
+    language="en",  # zh detects an installed Chinese font
 )
 fig, ax = publication_figure(width="single", ratio=0.64)
 ax.plot(x, y, color="#1F3A5F")
@@ -105,6 +109,8 @@ Render at the intended physical dimensions and inspect the actual output. Check:
 - zero baselines, log scales, smoothing, and fitted curves do not imply more than the data support;
 - panels are ordered and labelled consistently;
 - the figure remains legible when viewed at 100% print size.
+
+Also inspect a thumbnail: the main comparison should remain visible, panel geometry should be balanced, and titles should align. Use `refine_axes(ax, grid="y")` after numeric plotting for restrained one-direction grids. Do not add shadows, gradients on categorical marks, 3D, pill bars, or decorative card frames. Heatmap cell geometry should reflect the matrix rather than being stretched to fill spare space.
 
 Run the automated export check after rendering:
 

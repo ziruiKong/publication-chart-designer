@@ -1,5 +1,26 @@
 # Publication Chart Designer
 
+**直观、规整、优美的扁平化科研图表。**
+
+![Flat chart gallery: trends, bars, intervals and heatmap](docs/gallery/flat-gallery.png)
+
+*以上为合成演示数据，仅展示布局，不代表研究结论。*
+
+统一字体与留白、对齐的标题、等距柱形、简洁区间和规整热图，让比较一眼可读。
+白底、实色、细轴线；颜色服务于数据含义。论文、屏幕、幻灯片和海报分别设置字号。
+
+```python
+use_publication_style(context="paper", language="zh")
+```
+
+`language="zh"` 自动查找已安装的中文字体；找不到时会提示安装。
+`context` 支持 `paper`、`screen`、`slide`、`poster`。导出默认保持指定画布尺寸。
+
+Rebuild the preview with `python scripts/render_gallery.py`.
+Layout guidance: [Flat composition](references/flat-layout.md).
+Design reference: [academic-plot](https://github.com/mintandkiwi/academic-plot),
+particularly reusable profiles, Chinese support, and vector/raster export.
+
 A Codex skill for creating, revising, and auditing accurate, accessible charts for academic papers, theses, and research reports.
 
 The skill turns a research claim into a defensible visual encoding, then carries it through code, final-size typography, uncertainty, captions, alt text, and export review.
@@ -46,7 +67,7 @@ Use $publication-chart-designer to create a publication-ready chart from this da
 Copy `scripts/figure_kit.py` and the complete `assets/` directory into the analysis project:
 
 ```python
-from figure_kit import publication_figure, save_publication_figure, use_publication_style
+from figure_kit import publication_figure, refine_axes, save_publication_figure, use_publication_style
 
 use_publication_style(
     "assets/publication.mplstyle",
@@ -55,6 +76,7 @@ use_publication_style(
 )
 fig, ax = publication_figure(width="single", ratio=0.64)
 # Plot the audited data here.
+refine_axes(ax, grid="y")
 save_publication_figure(fig, "figures/figure_02_policy_effects")
 ```
 
