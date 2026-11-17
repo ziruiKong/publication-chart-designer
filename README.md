@@ -42,6 +42,19 @@ python scripts/render_domain_gallery.py
 总览图用于浏览，点击单类图片查看可读字号的完整图版。
 字体规范见 [Scientific typography](references/typography.md)。
 
+## Same data, before and after
+
+![Default Matplotlib compared with the skill](docs/gallery/comparison/comparison.png)
+
+左：Matplotlib 默认样式，使用正常的 constrained layout；右：使用本 skill 的科研图版编排。
+两者使用相同的 2,000 × 16 合成数据、统计分析、筛选规则和 16 × 9 英寸画布，
+差别来自字体层级、配色、面板比例、聚类树整合和图例/方法区域，并未刻意降低默认版质量。
+单图：[普通版](docs/gallery/comparison/before-default.png) · [Skill 版](docs/gallery/comparison/after-skill.png)。
+
+```bash
+python scripts/render_comparison.py
+```
+
 ```python
 use_publication_style(context="paper", language="zh")
 ```

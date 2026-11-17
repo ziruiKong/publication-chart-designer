@@ -420,6 +420,12 @@ def save_publication_figure(
 
         with mpl.rc_context({"savefig.bbox": "standard"}):
             fig.savefig(path, **options)
+        if fmt == "svg":
+            # Matplotlib emits trailing spaces inside path definitions. Keep
+            # generated SVGs clean in version control without changing geometry.
+            svg = path.read_text(encoding="utf-8")
+            path.write_text("\n".join(line.rstrip() for line in svg.splitlines()) + "\n",
+                            encoding="utf-8", newline="\n")
         paths.append(path)
 
     if close:

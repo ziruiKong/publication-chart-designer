@@ -225,7 +225,9 @@ def machine_learning(rng, colors):
     ax.set(xlabel="False positive rate",ylabel="True positive rate",xlim=(0,1),ylim=(0,1.02))
     bx.set(xlabel="Recall",ylabel="Precision",xlim=(0,1),ylim=(0,1.02))
     for axis,letter,title in [(ax,"a","Receiver operating characteristic"),(bx,"b","Precision–recall")]:
-        refine_axes(axis); heading(axis,letter,title); axis.legend(loc="lower left" if axis is bx else "lower right",fontsize=8)
+        refine_axes(axis)
+        axis.set_xticks([0,.25,.5,.75,1]); axis.set_yticks([0,.25,.5,.75,1])
+        heading(axis,letter,title); axis.legend(loc="lower left" if axis is bx else "lower right",fontsize=8)
     return fig,{"n":2400,"train_n":len(train),"test_n":len(test),"prevalence":prevalence,"metrics":metrics}
 
 
